@@ -196,20 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
             item.className = 'w-full flex flex-col'; 
             item.innerHTML = `
                 <div class="bg-gray-100 rounded-lg overflow-hidden aspect-video mb-2 relative shadow-sm border border-gray-200">
-                    <video muted playsinline loop class="w-full h-full object-cover">
+                    <video muted playsinline autoplay loop class="w-full h-full object-cover">
                         <source src="${data.video}" type="video/mp4">
                     </video>
                 </div>
             `;
             moreTrack.appendChild(item);
-            
-            // Autoplay
-            const video = item.querySelector('video');
-            video.play().catch(() => {});
-            
-            // Hover to pause/play interaction
-            item.addEventListener('mouseenter', () => video.play());
-            item.addEventListener('mouseleave', () => video.play()); // Keep playing? Or pause? Usually keep playing is better for galleries.
         });
     }
 });
