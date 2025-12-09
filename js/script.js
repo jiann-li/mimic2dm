@@ -173,4 +173,43 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize with first comparison
         goToComparison(0);
     }
+
+    // --- More Results Gallery Logic ---
+    const moreResultsData = [
+        {
+            video: 'assets/gen_results_1.mp4',
+        },
+        {
+            video: 'assets/gen_results_2.mp4',
+        },
+        {
+            video: 'assets/gen_results_3.mp4',
+        },
+    ];
+
+    const moreTrack = document.getElementById('more-track');
+
+    if (moreTrack) {
+        // Render items
+        moreResultsData.forEach(data => {
+            const item = document.createElement('div');
+            item.className = 'w-full flex flex-col'; 
+            item.innerHTML = `
+                <div class="bg-gray-100 rounded-lg overflow-hidden aspect-video mb-2 relative shadow-sm border border-gray-200">
+                    <video muted playsinline loop class="w-full h-full object-cover">
+                        <source src="${data.video}" type="video/mp4">
+                    </video>
+                </div>
+            `;
+            moreTrack.appendChild(item);
+            
+            // Autoplay
+            const video = item.querySelector('video');
+            video.play().catch(() => {});
+            
+            // Hover to pause/play interaction
+            item.addEventListener('mouseenter', () => video.play());
+            item.addEventListener('mouseleave', () => video.play()); // Keep playing? Or pause? Usually keep playing is better for galleries.
+        });
+    }
 });
