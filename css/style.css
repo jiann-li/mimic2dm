@@ -59,7 +59,8 @@ h1, h2, h3 {
 
 /* Toggle Switch Styles */
 .mode-toggle {
-    display: inline-flex;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
     background-color: #e5e7eb;
     border-radius: 9999px;
     padding: 0.25rem;
@@ -75,6 +76,8 @@ h1, h2, h3 {
     font-size: 0.875rem;
     color: #4b5563;
     transition: color 0.3s;
+    text-align: center;
+    white-space: nowrap;
 }
 .mode-toggle-item.active {
     color: #1f2937;
