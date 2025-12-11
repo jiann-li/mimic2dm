@@ -2,46 +2,116 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Project page loaded.");
 
+    // --- Teaser Toggle Logic ---
+    const modeToggle = document.getElementById('modeToggle');
     const videoSrc = document.getElementById('video-src');
     const videoRef = document.getElementById('video-ref');
     const videoSim = document.getElementById('video-sim');
+    
+    const videos = [videoSrc, videoRef, videoSim].filter(v => v !== null);
+    let finishedCount = 0;
 
-    if (videoSrc && videoRef && videoSim) {
-        const resetVideo = (video) => {
-            video.pause();
-            video.currentTime = 0;
-            video.classList.add('opacity-0');
-        };
+    // Initialize videos
+    videos.forEach(v => {
+        v.loop = false; // Disable loop to detect end
+        v.muted = true;
+        v.playsInline = true;
+        v.autoplay = true;
+        
+        v.addEventListener('ended', () => {
+            finishedCount++;
+            if (finishedCount >= videos.length) {
+                // All videos finished
+                finishedCount = 0;
+                toggleTeaserMode();
+                // Restart all videos
+                videos.forEach(video => {
+                    video.currentTime = 0;
+                    video.play().catch(e => console.log("Replay prevented:", e));
+                });
+            }
+        });
 
-        const playVideo = (video) => {
-            video.play();
-            video.classList.remove('opacity-0');
-        };
+        v.play().catch(e => console.log("Autoplay prevented:", e));
+    });
 
-        const startSequence = () => {
-            // T=0s: Play Src, others reset
-            resetVideo(videoSrc);
-            playVideo(videoSrc);
-            
-            resetVideo(videoRef);
-            resetVideo(videoSim);
+    let isGenerativeMode = false;
 
-            // T=4s: Play Ref
-            setTimeout(() => {
-                playVideo(videoRef);
-            }, 4000);
+    const toggleTeaserMode = () => {
+        isGenerativeMode = !isGenerativeMode;
+        
+        // Toggle Background Position
+        const toggleBg = document.getElementById('toggleBg');
+        if (toggleBg) toggleBg.style.transform = isGenerativeMode ? 'translateX(100%)' : 'translateX(0)';
 
-            // T=10s: Play Sim
-            setTimeout(() => {
-                playVideo(videoSim);
-            }, 10000);
-        };
+        // Toggle Text Colors
+        const item1 = document.getElementById('toggleImitation');
+        const item2 = document.getElementById('toggleGenerative');
+        if (item1 && item2) {
+            if (isGenerativeMode) {
+                item1.classList.remove('active');
+                item2.classList.add('active');
+            } else {
+                item1.classList.add('active');
+                item2.classList.remove('active');
+            }
+        }
 
-        // Start immediately
-        startSequence();
+        // Update Column 1 Content
+        const videoSourceContainer = document.getElementById('content-source-video');
+        const generatorCard = document.getElementById('content-generator');
+        const col1Title = document.getElementById('col1-title');
 
-        // Repeat every 15s
-        setInterval(startSequence, 15000);
+        if (videoSourceContainer && generatorCard && col1Title) {
+            if (isGenerativeMode) {
+                videoSourceContainer.classList.remove('opacity-100', 'z-10');
+                videoSourceContainer.classList.add('opacity-0', 'z-0');
+                
+                generatorCard.classList.remove('opacity-0', 'z-0');
+                generatorCard.classList.add('opacity-100', 'z-10');
+                
+                col1Title.innerText = "Motion Generator";
+            } else {
+                videoSourceContainer.classList.remove('opacity-0', 'z-0');
+                videoSourceContainer.classList.add('opacity-100', 'z-10');
+                
+                generatorCard.classList.remove('opacity-100', 'z-10');
+                generatorCard.classList.add('opacity-0', 'z-0');
+                
+                col1Title.innerText = "Source Video";
+            }
+        }
+
+        // Update Arrows
+        const arrow1 = document.getElementById('arrow1-label');
+        if (arrow1) arrow1.innerText = isGenerativeMode ? "Sample" : "Extract";
+
+        // Update Video Sources
+        // Note: Replace these paths with actual assets when available
+        if (videoRef && videoSim) {
+            if (isGenerativeMode) {
+                videoRef.src = 'assets/teaser_video_sample.mp4'; // Example
+                videoSim.src = 'assets/teaser_video_gen.mp4'; // Example
+            } else {
+                videoRef.src = 'assets/teaser_video_ref.mp4';
+                videoSim.src = 'assets/teaser_video_sim.mp4';
+            }
+            // Reload to play new source
+            // videoRef.load(); videoRef.play();
+            // videoSim.load(); videoSim.play();
+        }
+    };
+
+    if (modeToggle) {
+        modeToggle.addEventListener('click', () => {
+            toggleTeaserMode();
+            // Reset playback on manual switch
+            finishedCount = 0;
+            videos.forEach(v => {
+                v.currentTime = 0;
+                v.play().catch(e => console.log("Manual replay prevented:", e));
+            });
+        });
     }
 
     // --- Comparison Gallery Logic ---

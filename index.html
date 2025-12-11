@@ -63,65 +63,89 @@
             <img src="assets/teaser.png" alt="Teaser Figure" class="w-full h-auto">
         </div>
 
-        <!-- Comparison Panel -->
-        <div class="flex flex-col md:flex-row items-center justify-center gap-4 max-w-7xl mx-auto mt-8">
-            <!-- Column 1: Source Video -->
-            <div class="flex-1 w-full">
-                <h3 class="text-lg font-semibold mb-2 text-center text-gray-800">Source Video</h3>
-                <div class="video-container bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                    <video id="video-src" muted playsinline class="w-full h-full object-cover opacity-0 transition-opacity duration-200">
-                        <source src="assets/teaser_video_src.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+        <!-- Interactive Teaser Panel -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-2 sm:p-6 mb-8 max-w-6xl mx-auto">
+            
+            <!-- Mode Toggle -->
+            <div class="flex justify-center mb-8">
+                <div class="mode-toggle" id="modeToggle">
+                    <div class="mode-toggle-bg" id="toggleBg"></div>
+                    <div class="mode-toggle-item active" id="toggleImitation">Motion Imitation</div>
+                    <div class="mode-toggle-item" id="toggleGenerative">Hierarchical Control</div>
                 </div>
             </div>
 
-            <!-- Arrow 1 -->
-            <div class="hidden md:flex flex-col items-center justify-center text-gray-400 px-2">
-                <i class="fas fa-chevron-right text-2xl"></i>
-                <span class="text-xs font-medium mt-1">Extract</span>
-            </div>
-            <!-- Mobile Arrow -->
-            <div class="md:hidden text-gray-400 py-2">
-                <i class="fas fa-chevron-down text-xl"></i>
-            </div>
+            <!-- Pipeline Visual -->
+            <div class="flex flex-col md:flex-row items-stretch justify-center gap-2 md:gap-4">
+                
+                <!-- Column 1: Input (Video or Generator) -->
+                <div class="flex-1 flex flex-col w-full">
+                    <h3 class="text-sm font-bold uppercase tracking-wider mb-3 text-gray-500 text-center" id="col1-title">Source Video</h3>
+                    
+                    <div class="relative flex-grow rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-gray-50 group">
+                        <!-- Content A: Source Video -->
+                        <div id="content-source-video" class="absolute inset-0 transition-opacity duration-300 opacity-100 z-10">
+                            <div class="video-container h-full">
+                                <video id="video-src" muted playsinline class="w-full h-full object-cover">
+                                    <source src="assets/teaser_video_src.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
 
-            <!-- Column 2: 2D Motion -->
-            <div class="flex-1 w-full">
-                <h3 class="text-lg font-semibold mb-2 text-center text-gray-800">2D Motion</h3>
-                <div class="video-container bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                    <video id="video-ref" muted playsinline class="w-full h-full object-cover opacity-0 transition-opacity duration-200">
-                        <source src="assets/teaser_video_ref.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                        <!-- Content B: Generator Visual -->
+                        <div id="content-generator" class="absolute inset-0 transition-opacity duration-300 opacity-0 z-0 generator-card flex flex-col items-center justify-center text-center p-6">
+                            <i class="fas fa-brain text-6xl text-indigo-500 mb-4 pulse-icon"></i>
+                            <h4 class="font-bold text-indigo-900 text-lg">2D Motion Generator</h4>
+                            <p class="text-xs text-indigo-600 mt-2 max-w-[200px]">Transformer-based Autoregressive Model</p>
+                            <div class="mt-4 flex gap-2">
+                                <span class="px-2 py-1 bg-white rounded text-xs text-indigo-500 border border-indigo-200">Dancing</span>
+                                <span class="px-2 py-1 bg-white rounded text-xs text-indigo-500 border border-indigo-200">Dribbling</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow 1 -->
+                <div class="flex md:flex-col items-center justify-center text-gray-400 py-2 md:px-2 flex-shrink-0">
+                    <i class="fas fa-chevron-right text-2xl hidden md:block"></i>
+                    <i class="fas fa-chevron-down text-2xl md:hidden"></i>
+                    <span class="text-[10px] font-bold uppercase mt-1 tracking-widest text-gray-400" id="arrow1-label">Extract</span>
+                </div>
+
+                <!-- Column 2: 2D Motion -->
+                <div class="flex-1 flex flex-col w-full">
+                    <h3 class="text-sm font-bold uppercase tracking-wider mb-3 text-gray-500 text-center">2D Motion</h3>
+                    <div class="video-container bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 flex-grow relative">
+                        <video id="video-ref" muted playsinline class="w-full h-full object-cover absolute inset-0 transition-opacity duration-500">
+                            <source src="assets/teaser_video_ref.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+
+                <!-- Arrow 2 -->
+                <div class="flex md:flex-col items-center justify-center text-gray-400 py-2 md:px-2 flex-shrink-0">
+                    <i class="fas fa-chevron-right text-2xl hidden md:block"></i>
+                    <i class="fas fa-chevron-down text-2xl md:hidden"></i>
+                    <span class="text-[10px] font-bold uppercase mt-1 tracking-widest text-gray-400" id="arrow2-label">Tracking</span>
+                </div>
+
+                <!-- Column 3: Simulated Character -->
+                <div class="flex-1 flex flex-col w-full">
+                    <h3 class="text-sm font-bold uppercase tracking-wider mb-3 text-gray-500 text-center">Simulated Character</h3>
+                    <div class="video-container bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 flex-grow relative">
+                        <video id="video-sim" muted playsinline class="w-full h-full object-cover absolute inset-0 transition-opacity duration-500">
+                            <source src="assets/teaser_video_sim.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                 </div>
             </div>
-
-            <!-- Arrow 2 -->
-            <div class="hidden md:flex flex-col items-center justify-center text-gray-400 px-2">
-                <i class="fas fa-chevron-right text-2xl"></i>
-                <span class="text-xs font-medium mt-1">Imitate</span>
-            </div>
-            <!-- Mobile Arrow -->
-            <div class="md:hidden text-gray-400 py-2">
-                <i class="fas fa-chevron-down text-xl"></i>
-            </div>
-
-            <!-- Column 3: Simulated Character -->
-            <div class="flex-1 w-full">
-                <h3 class="text-lg font-semibold mb-2 text-center text-gray-800">Simulated Character</h3>
-                <div class="video-container bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                    <video id="video-sim" muted playsinline class="w-full h-full object-cover opacity-0 transition-opacity duration-200">
-                        <source src="assets/teaser_video_sim.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
-        </div>
-
-        <p class="teaser-caption max-w-3xl mx-auto mt-8 mb-12">
-            <strong>Mimic2DM</strong> effectively learns character controllers for diverse motion types by directly imitating 2D motion sequences extracted from in-the-wild videos, without requiring any 3D motion data.
-        </p>
+            
+            <p class="teaser-caption mt-6 text-gray-500" id="teaser-desc">
+                <strong>Mimic2DM</strong> learns to track single-view 2D motions extracted from videos and seamlessly integrates with a 2D motion generator for generative tasks.
+            </p>
     </section>
 
     <!-- Abstract -->
@@ -129,8 +153,6 @@
         <h2 class="text-2xl font-bold mb-4 border-b pb-2">Abstract</h2>
         <p class="text-justify text-gray-700 leading-relaxed mb-6">
             Video data is more cost-effective than motion capture data for learning 3D character motion controllers, yet synthesizing realistic and diverse behaviors directly from videos remains challenging. Previous approaches typically rely on off-the-shelf motion reconstruction techniques to obtain 3D trajectories for physics-based imitation. These reconstruction methods struggle with generalizability, as they either require 3D training data (potentially scarce) or fail to produce physically plausible poses, hindering their application to challenging scenarios like human-object interaction (HOI) or non-human characters.
-        </p>
-        <p class="text-justify text-gray-700 leading-relaxed">
             We tackle this challenge by introducing <strong>Mimic2DM</strong>, a novel motion imitation framework that learns the control policy directly and solely from widely available 2D keypoint trajectories extracted from videos. By minimizing the reprojection error, we train a general single-view 2D motion tracking policy capable of following arbitrary 2D reference motions in physics simulation, using only 2D motion data. The policy, when trained on diverse 2D motions captured from different viewpoints, can further acquire 3D motion tracking capabilities by aggregating multiple views. Moreover, we develop a transformer-based autoregressive 2D motion generator and integrate it into a hierarchical control framework to synthesize physically plausible and diverse motions across a range of domains, including dancing, soccer dribbling, and animal movements.
         </p>
     </section>
